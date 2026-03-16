@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerador de CPF Profissional</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --success: #16a34a;
+            --bg: #f8fafc;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .card {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 12px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 100%;
+            max-width: 400px;
+        }
+
+        h1 {
+            color: #1e293b;
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .display-container {
+            margin-bottom: 1.5rem;
+        }
+
+        input {
+            width: 100%;
+            font-size: 1.8rem;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            text-align: center;
+            color: #334155;
+            background: #f1f5f9;
+            box-sizing: border-box;
+            outline: none;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            color: white;
+            background-color: var(--primary);
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        button:hover {
+            background-color: #1d4ed8;
+        }
+
+        .info {
+            margin-top: 1.5rem;
+            font-size: 0.85rem;
+            color: #64748b;
+            line-height: 1.4;
+        }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h1>Gerador de CPF</h1>
+    
+    <div class="display-container">
+        <input type="text" id="cpfResult" readonly placeholder="000.000.000-00">
+    </div>
+
+    <button onclick="gerarEExibir()">Gerar Novo CPF</button>
+
+    <div class="info">
+        Os dígitos são calculados via <strong>Módulo 11</strong>.<br>
+        Gere um número e teste em um validador!
+    </div>
+</div>
+
+<script>
+    // Função auxiliar para calcular os dígitos verificadores
+    function calcularDigito(base) {
+        let peso = base.length + 1;
+        let soma = 0;
+        
+        for (let i = 0; i < base.length; i++) {
+            soma += base[i] * peso--;
+        }
+
+        let resto = soma % 11;
+        return resto < 2 ? 0 : 11 - resto;
+    }
+
+    function gerarEExibir() {
+        // 1. Gera os 9 primeiros dígitos aleatórios
+        let cpfBase = [];
+        for (let i = 0; i < 9; i++) {
+            cpfBase.push(Math.floor(Math.random() * 10));
+        }
+
+        // 2. Calcula o primeiro dígito verificador
+        const d1 = calcularDigito(cpfBase);
+        cpfBase.push(d1);
+
+        // 3. Calcula o segundo dígito verificador
+        const d2 = calcularDigito(cpfBase);
+        cpfBase.push(d2);
+
+        // 4. Formata a string com máscara (000.000.000-00)
+        const cpfFinal = cpfBase.join('');
+        const formatado = cpfFinal.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4");
+
+        // 5. Exibe na tela
+        document.getElementById('cpfResult').value = formatado;
+    }
+
+    // Gerar um ao carregar a página
+    window.onload = gerarEExibir;
+</script>
+
+</body>
+</html>
